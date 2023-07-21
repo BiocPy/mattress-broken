@@ -1,0 +1,6 @@
+[submodule "extern/tatami"]
+	path = extern/tatami
+	url = https://github.com/tatami-inc/tatami
+[submodule "extern/tatami_hdf5"]
+	path = extern/tatami_hdf5
+	url = https://github.com/tatami-inc/tatami_hdf5
