@@ -1,29 +1,31 @@
 cimport common
+from libc.stdint cimport uintptr_t
 from cython.operator cimport dereference
 cimport numpy as np
+import numpy as np
 
 cdef class TatamiNumericPointer:
-    def __init__(self, ptr, obj):
+    def __init__(self, uintptr_t ptr, obj):
         self.ptr = ptr
         self.obj = obj
 
     def nrow(self):
-        return dereference(self.ptr).nrow();
+        return common.extract_nrow(self.ptr);
 
     def ncol(self):
-        return dereference(self.ptr).ncol();
+        return common.extract_ncol(self.ptr);
 
     def sparse(self):
-        return dereference(self.ptr).sparse();
+        return common.extract_sparse(self.ptr);
 
     def row(self, r):
-        cdef int NR = dereference(ptr).nrow();
-        cdef np.ndarray[np.double, ndim=1] myarr = np.empty(NR, dtype=np.int32)
-        dereference(dereference(self.ptr).dense_row()).fetch_copy(r, &myarr[0]);
+        cdef int NC = common.extract_ncol(self.ptr);
+        cdef np.ndarray[double, ndim=1] myarr = np.empty(NC, dtype=np.float64)
+        common.extract_row(self.ptr, r, &myarr[0]);
         return myarr
 
-    def column(self, r):
-        cdef int NR = dereference(ptr).nrow();
-        cdef np.ndarray[np.double, ndim=1] myarr = np.empty(NR, dtype=np.int32)
-        dereference(dereference(self.ptr).dense_row()).fetch_copy(r, &myarr[0]);
-        return myarra
+    def column(self, c):
+        cdef int NR = common.extract_nrow(self.ptr);
+        cdef np.ndarray[double, ndim=1] myarr = np.empty(NR, dtype=np.float64)
+        common.extract_column(self.ptr, c, &myarr[0]);
+        return myarr
