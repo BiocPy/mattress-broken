@@ -11,6 +11,7 @@ cdef extern from "cpp/common.cpp":
 cdef extern from "cpp/dense.cpp":
     uintptr_t initialize_dense_matrix(int, int, float*, bool)
     uintptr_t initialize_dense_matrix(int, int, double*, bool)
+    uintptr_t initialize_dense_matrix(int, int, signed long long*, bool) # ??? I dunno, int64_t doesn't work.
     uintptr_t initialize_dense_matrix(int, int, int64_t*, bool)
     uintptr_t initialize_dense_matrix(int, int, uint64_t*, bool)
     uintptr_t initialize_dense_matrix(int, int, int32_t*, bool)

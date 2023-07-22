@@ -41,7 +41,7 @@ cdef class TatamiNumericPointer:
         extract_column(self.ptr, c, &myarr[0]);
         return myarr
 
-def initialize_dense_matrix_exported(int nr, int nc, np.ndarray arr, bool byrow):
+def py_initialize_dense_matrix(int nr, int nc, np.ndarray arr, bool byrow):
     cdef TatamiNumericPointer output;
 
     # Defining everything here because otherwise Cython complains about scoping.
@@ -59,5 +59,34 @@ def initialize_dense_matrix_exported(int nr, int nc, np.ndarray arr, bool byrow)
     if arr.dtype == np.float64:
         view_f64 = arr
         output = TatamiNumericPointer(initialize_dense_matrix(nr, nc, &(view_f64[0,0]), byrow), arr)
+    elif arr.dtype == np.float32:
+        view_f32 = arr
+        output = TatamiNumericPointer(initialize_dense_matrix(nr, nc, &(view_f32[0,0]), byrow), arr)
+    elif arr.dtype == np.int64:
+        view_i64 = arr
+        output = TatamiNumericPointer(initialize_dense_matrix(nr, nc, &(view_i64[0,0]), byrow), arr)
+    elif arr.dtype == np.int32:
+        view_i32 = arr
+        output = TatamiNumericPointer(initialize_dense_matrix(nr, nc, &(view_i32[0,0]), byrow), arr)
+    elif arr.dtype == np.int16:
+        view_i16 = arr
+        output = TatamiNumericPointer(initialize_dense_matrix(nr, nc, &(view_i16[0,0]), byrow), arr)
+    elif arr.dtype == np.int8:
+        view_i8 = arr
+        output = TatamiNumericPointer(initialize_dense_matrix(nr, nc, &(view_i8[0,0]), byrow), arr)
+    elif arr.dtype == np.uint64:
+        view_u64 = arr
+        output = TatamiNumericPointer(initialize_dense_matrix(nr, nc, &(view_u64[0,0]), byrow), arr)
+    elif arr.dtype == np.uint32:
+        view_u32 = arr
+        output = TatamiNumericPointer(initialize_dense_matrix(nr, nc, &(view_u32[0,0]), byrow), arr)
+    elif arr.dtype == np.uint16:
+        view_u16 = arr
+        output = TatamiNumericPointer(initialize_dense_matrix(nr, nc, &(view_u16[0,0]), byrow), arr)
+    elif arr.dtype == np.uint8:
+        view_u8 = arr
+        output = TatamiNumericPointer(initialize_dense_matrix(nr, nc, &(view_u8[0,0]), byrow), arr)
+    else:
+        raise TypeError("unsupported numpy type for dense matrix initialization")
 
     return output

@@ -1,21 +1,21 @@
-#include "tatami/tatami.hpp"
+#include "Mattress.h"
 
-inline int extract_nrow(uintptr_t ptr) {
-    return reinterpret_cast<tatami::NumericMatrix*>(ptr)->nrow();
+inline int extract_nrow(uintptr_t mat) {
+    return reinterpret_cast<Mattress*>(mat)->ptr->nrow();
 }
 
-inline int extract_ncol(uintptr_t ptr) {
-    return reinterpret_cast<tatami::NumericMatrix*>(ptr)->ncol();
+inline int extract_ncol(uintptr_t mat) {
+    return reinterpret_cast<Mattress*>(mat)->ptr->ncol();
 }
 
-inline bool extract_sparse(uintptr_t ptr) {
-    return reinterpret_cast<tatami::NumericMatrix*>(ptr)->sparse();
+inline bool extract_sparse(uintptr_t mat) {
+    return reinterpret_cast<Mattress*>(mat)->ptr->sparse();
 }
 
-inline void extract_row(uintptr_t ptr, int r, double* output) {
-    reinterpret_cast<tatami::NumericMatrix*>(ptr)->dense_row()->fetch_copy(r, output);
+inline void extract_row(uintptr_t mat, int r, double* output) {
+    reinterpret_cast<Mattress*>(mat)->row()->fetch_copy(r, output);
 }
 
-inline void extract_column(uintptr_t& ptr, int c, double* output) {
-    reinterpret_cast<tatami::NumericMatrix*>(ptr)->dense_column()->fetch_copy(c, output);
+inline void extract_column(uintptr_t mat, int c, double* output) {
+    reinterpret_cast<Mattress*>(mat)->column()->fetch_copy(c, output);
 }

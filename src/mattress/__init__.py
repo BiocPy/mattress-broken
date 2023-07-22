@@ -17,5 +17,5 @@ finally:
 
 from .core import (
     TatamiNumericPointer,
-    initialize_dense_matrix_exported
+    py_initialize_dense_matrix
 )
