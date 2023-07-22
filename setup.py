@@ -21,9 +21,8 @@ if __name__ == "__main__":
                     Extension(
                         "mattress.core",
                         [ 
-                            "src/mattress/lib/dense.pyx", 
+                            "src/mattress/lib/bindings.pyx", 
                             "src/mattress/lib/cpp/dense.cpp", 
-                            "src/mattress/lib/common.pyx",
                             "src/mattress/lib/cpp/common.cpp"
                         ],
                         include_dirs=[

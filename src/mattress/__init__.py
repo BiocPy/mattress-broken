@@ -15,4 +15,7 @@ except PackageNotFoundError:  # pragma: no cover
 finally:
     del version, PackageNotFoundError
 
-from .core import *
+from .core import (
+    TatamiNumericPointer,
+    initialize_dense_matrix_exported
+)
