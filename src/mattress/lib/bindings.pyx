@@ -5,6 +5,7 @@ from bindings cimport (
     extract_sparse,
     extract_row,
     extract_column,
+    free_mat,
     initialize_dense_matrix
 )
 from libcpp cimport bool
@@ -14,6 +15,9 @@ cimport numpy as np
 cdef class TatamiNumericPointer:
     cdef Mattress* ptr
     cdef object obj # held to prevent garbage collection.
+
+    def __dealloc__(self):
+        free_mat(self.ptr)
 
     def nrow(self):
         return extract_nrow(self.ptr);

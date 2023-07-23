@@ -10,6 +10,7 @@ cdef extern from "cpp/common.cpp":
     bool extract_sparse(Mattress*)
     void extract_row(Mattress*, int, double*);
     void extract_column(Mattress*, int, double*);
+    void free_mat(Mattress*);
 
 cdef extern from "cpp/dense.cpp":
     Mattress* initialize_dense_matrix[T](int, int, T*, bool)

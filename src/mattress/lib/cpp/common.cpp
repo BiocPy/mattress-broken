@@ -19,3 +19,7 @@ inline void extract_row(Mattress* mat, int r, double* output) {
 inline void extract_column(Mattress* mat, int c, double* output) {
     mat->column()->fetch_copy(c, output);
 }
+
+inline void free_mat(Mattress* mat) {
+    delete mat;
+}
