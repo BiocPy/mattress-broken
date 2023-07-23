@@ -9,14 +9,4 @@ cdef extern from "cpp/common.cpp":
     void extract_column(uintptr_t, int, double*);
 
 cdef extern from "cpp/dense.cpp":
-    uintptr_t initialize_dense_matrix(int, int, float*, bool)
-    uintptr_t initialize_dense_matrix(int, int, double*, bool)
-    uintptr_t initialize_dense_matrix(int, int, signed long long*, bool) # ??? I dunno, int64_t doesn't work.
-    uintptr_t initialize_dense_matrix(int, int, int64_t*, bool)
-    uintptr_t initialize_dense_matrix(int, int, uint64_t*, bool)
-    uintptr_t initialize_dense_matrix(int, int, int32_t*, bool)
-    uintptr_t initialize_dense_matrix(int, int, uint32_t*, bool)
-    uintptr_t initialize_dense_matrix(int, int, int16_t*, bool)
-    uintptr_t initialize_dense_matrix(int, int, uint16_t*, bool)
-    uintptr_t initialize_dense_matrix(int, int, int8_t*, bool)
-    uintptr_t initialize_dense_matrix(int, int, uint8_t*, bool)
+    uintptr_t initialize_dense_matrix[T](int, int, T*, bool)
