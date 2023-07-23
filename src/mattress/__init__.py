@@ -15,7 +15,4 @@ except PackageNotFoundError:  # pragma: no cover
 finally:
     del version, PackageNotFoundError
 
-from .core import (
-    TatamiNumericPointer,
-    py_initialize_dense_matrix
-)
+from .interface import tatamize as tatamize
