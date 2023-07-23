@@ -1,8 +1,8 @@
 import numpy as np
 from mattress import tatamize
 
-__author__ = "jkanche"
-__copyright__ = "jkanche"
+__author__ = "ltla, jkanche"
+__copyright__ = "ltla, jkanche"
 __license__ = "MIT"
 
 
