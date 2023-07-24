@@ -3,7 +3,7 @@ from typing import Any
 
 import numpy as np
 
-from .core import TatamiNumericPointer, py_initialize_dense_matrix
+from .core import TatamiNumericPointer
 from .utils import map_order_to_bool
 
 __author__ = "jkanche"
@@ -27,11 +27,11 @@ def tatamize(x: Any, order: str = "C") -> TatamiNumericPointer:
         TatamiNumericPointer: a pointer to tatami object.
     """
     raise NotImplementedError(
-        f"tatamize  is not supported for objects of class: {type(x)}"
+        f"tatamize is not supported for objects of class: {type(x)}"
     )
 
 
 @tatamize.register
 def _tatamize_numpy(x: np.ndarray, order: str = "C") -> TatamiNumericPointer:
     order_to_bool = map_order_to_bool(order=order)
-    return py_initialize_dense_matrix(x.shape[0], x.shape[1], x, order_to_bool)
+    return TatamiNumericPointer.from_dense(x.shape[0], x.shape[1], x, order_to_bool)
