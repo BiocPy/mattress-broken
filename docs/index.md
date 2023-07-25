@@ -1,18 +1,15 @@
 # mattress
 
-Add a short description here!
+Mattress provides tatami representations for python matrices (numpy, scipy etc)
 
 
-## Note
+## Install
 
-> This is the main page of your project's [Sphinx] documentation. It is
-> formatted in [Markdown]. Add additional pages by creating md-files in
-> `docs` or rst-files (formatted in [reStructuredText]) and adding links to
-> them in the `Contents` section below.
->
-> Please check [Sphinx] and [MyST] for more information
-> about how to document your project and how to configure your preferences.
+Package is published to [PyPI](https://pypi.org/project/mattress/)
 
+```shell
+pip install mattress
+```
 
 ## Contents
 
@@ -20,6 +17,7 @@ Add a short description here!
 :maxdepth: 2
 
 Overview <readme>
+Tutorial <tutorial>
 Contributions & Help <contributing>
 License <license>
 Authors <authors>

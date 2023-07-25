@@ -14,7 +14,45 @@
 
 # mattress
 
-This project uses Cython to provide [tatami matrix representations](https://github.com/tatami-inc) in Python.
+This project provides [tatami matrix representations](https://github.com/tatami-inc) in Python.
+
+
+## Install
+
+Package is published to [PyPI](https://pypi.org/project/mattress/)
+
+```shell
+pip install mattress
+```
+
+## Usage
+
+***Currently only supports dense matrices.***
+
+To convert a numpy dense matrix to tatami representation - 
+
+```python
+import numpy as np
+from mattress import tatamize
+
+x = np.random.rand(1000, 100)
+
+tatamat = tatamize(y)
+```
+
+Methods are available to access the matrix by `row`, `column`
+
+```python
+tatamat.row(0)
+tatamat.column(1)
+```
+
+Additionally you can also specify if the input matrix is a column or row major.
+
+```python
+x = np.ones((2, 3), order='F')
+tatamat = tatamize(y, order="F")
+```
 
 ## Developer Notes
 
