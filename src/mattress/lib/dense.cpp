@@ -1,8 +1,11 @@
 #include "Mattress.h"
+#include <string>
+#include <stdexcept>
+#include <cstring>
+#include <cstdint>
 
 template<typename T>
 Mattress* initialize_dense_matrix(int nr, int nc, const T* ptr, bool byrow) { 
-    std::cout << ptr[0] << "\t" << ptr[nr * nc - 1] << std::endl;
     tatami::ArrayView<T> view(ptr, static_cast<size_t>(nr) * static_cast<size_t>(nc));
     if (byrow) {
         return new Mattress(new tatami::DenseRowMatrix<double, int, decltype(view)>(nr, nc, view));
@@ -13,10 +16,40 @@ Mattress* initialize_dense_matrix(int nr, int nc, const T* ptr, bool byrow) {
 
 extern "C" {
 
-void* py_initialize_dense_matrix_double(int nr, int nc, void* ptr, char byrow) {
-    auto ptr2 = initialize_dense_matrix(nr, nc, reinterpret_cast<const double*>(ptr), byrow);
-    std::cout << nr << "\t" << nc << "\t" << (size_t)ptr << "\t" << (size_t)ptr2 << std::endl;
-    return reinterpret_cast<void*>(ptr2);
+Mattress* py_initialize_dense_matrix(int nr, int nc, const char* type, void* ptr, int byrow) {
+    if (std::strcmp(type, "float64") == 0) {
+        return initialize_dense_matrix(nr, nc, reinterpret_cast<double*>(ptr), byrow);
+
+    } else if (std::strcmp(type, "float32") == 0) {
+        return initialize_dense_matrix(nr, nc, reinterpret_cast<float*>(ptr), byrow);
+
+    } else if (std::strcmp(type, "int64") == 0) {
+        return initialize_dense_matrix(nr, nc, reinterpret_cast<int64_t*>(ptr), byrow);
+
+    } else if (std::strcmp(type, "int32") == 0) {
+        return initialize_dense_matrix(nr, nc, reinterpret_cast<int32_t*>(ptr), byrow);
+
+    } else if (std::strcmp(type, "int16") == 0) {
+        return initialize_dense_matrix(nr, nc, reinterpret_cast<int16_t*>(ptr), byrow);
+
+    } else if (std::strcmp(type, "int8") == 0) {
+        return initialize_dense_matrix(nr, nc, reinterpret_cast<int8_t*>(ptr), byrow);
+
+    } else if (std::strcmp(type, "uint64") == 0) {
+        return initialize_dense_matrix(nr, nc, reinterpret_cast<uint64_t*>(ptr), byrow);
+
+    } else if (std::strcmp(type, "uint32") == 0) {
+        return initialize_dense_matrix(nr, nc, reinterpret_cast<uint32_t*>(ptr), byrow);
+
+    } else if (std::strcmp(type, "uint16") == 0) {
+        return initialize_dense_matrix(nr, nc, reinterpret_cast<uint16_t*>(ptr), byrow);
+
+    } else if (std::strcmp(type, "uint8") == 0) {
+        return initialize_dense_matrix(nr, nc, reinterpret_cast<uint8_t*>(ptr), byrow);
+    }
+
+    throw std::runtime_error("unrecognized array type '" + std::string(type) + "' for dense matrix initialization");
+    return NULL;
 }
 
 }

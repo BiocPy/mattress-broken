@@ -12,7 +12,9 @@ __license__ = "MIT"
 import ctypes
 import os
 lib = ctypes.CDLL(os.path.join(os.path.dirname(os.path.abspath(__file__)), "core.cpython-311-darwin.so"))
-lib.py_initialize_dense_matrix_double.restype = ctypes.c_void_p
+
+class Mattress:
+    pass
 
 @singledispatch
 def tatamize(x: Any, order: str = "C"):
@@ -33,34 +35,47 @@ def tatamize(x: Any, order: str = "C"):
         f"tatamize is not supported for objects of class: {type(x)}"
     )
 
+lib.py_free_mat.argtypes = [ctypes.c_void_p]
+lib.py_extract_nrow.restype = ctypes.c_int
+lib.py_extract_nrow.argtypes = [ctypes.c_void_p]
+lib.py_extract_ncol.restype = ctypes.c_int
+lib.py_extract_ncol.argtypes = [ctypes.c_void_p]
+lib.py_extract_sparse.restype = ctypes.c_int
+lib.py_extract_sparse.argtypes = [ctypes.c_void_p]
+lib.py_extract_row.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
+lib.py_extract_column.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
+
 class TatamiNumericPointer:
     def __init__(self, ptr):
         self.ptr = ptr
 
     def __del__(self):
-        lib.py_free_mat(ctypes.c_void_p(self.ptr))
+        lib.py_free_mat(self.ptr)
 
     def nrow(self):
-        return lib.py_extract_nrow(ctypes.c_void_p(self.ptr))
+        return lib.py_extract_nrow(self.ptr)
 
     def ncol(self):
-        return lib.py_extract_ncol(ctypes.c_void_p(self.ptr))
+        return lib.py_extract_ncol(self.ptr)
 
     def sparse(self):
-        return lib.py_extract_sparse(ctypes.c_void_p(self.ptr))
+        return lib.py_extract_sparse(self.ptr) > 0
 
     def row(self, r):
         output = np.ndarray((self.ncol(),), dtype="float64")
-        lib.py_extract_row(ctypes.c_void_p(self.ptr), r, ctypes.c_void_p(output.ctypes.data))
+        lib.py_extract_row(self.ptr, r, output.ctypes.data)
         return output
 
     def column(self, c):
         output = np.ndarray((self.nrow(),), dtype="float64")
-        lib.py_extract_column(ctypes.c_void_p(self.ptr), c, ctypes.c_void_p(output.ctypes.data))
+        lib.py_extract_column(self.ptr, c, output.ctypes.data)
         return output
+
+lib.py_initialize_dense_matrix.restype = ctypes.c_void_p
+lib.py_initialize_dense_matrix.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_char_p, ctypes.c_void_p, ctypes.c_char]
 
 @tatamize.register
 def _tatamize_numpy(x: np.ndarray, order: str = "C"): 
     order_to_bool = map_order_to_bool(order=order)
-    print(x.ctypes.data)
-    return TatamiNumericPointer(lib.py_initialize_dense_matrix_double(x.shape[0], x.shape[1], ctypes.c_void_p(x.ctypes.data), ctypes.c_char(order_to_bool)))
+    dtype = str(x.dtype).encode('utf-8')
+    return TatamiNumericPointer(lib.py_initialize_dense_matrix(x.shape[0], x.shape[1], dtype, x.ctypes.data, order_to_bool))

@@ -7,10 +7,6 @@
 struct Mattress {
     Mattress(tatami::NumericMatrix* p) : ptr(p) {}
     Mattress(std::shared_ptr<tatami::NumericMatrix> p) : ptr(std::move(p)) {}
-    ~Mattress() {
-        std::cout << "YAY" << std::endl;
-    }
-
     std::shared_ptr<tatami::NumericMatrix> ptr;
     std::unique_ptr<tatami::FullDenseExtractor<double, int> > byrow, bycol;
 };
