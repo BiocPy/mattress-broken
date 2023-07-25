@@ -9,12 +9,18 @@ __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-import ctypes
-import os
-lib = ctypes.CDLL(os.path.join(os.path.dirname(os.path.abspath(__file__)), "core.cpython-311-darwin.so"))
+import ctypes as ct
 
-class Mattress:
-    pass
+# TODO: surely there's a better way than whatever this is.
+def load_dll():
+    import os
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    contents = os.listdir(dirname)
+    for x in contents:
+        if x.startswith("core") and not x.endswith("py"):
+            return ct.CDLL(os.path.join(dirname, x))
+
+lib = load_dll()
 
 @singledispatch
 def tatamize(x: Any, order: str = "C"):
@@ -35,15 +41,15 @@ def tatamize(x: Any, order: str = "C"):
         f"tatamize is not supported for objects of class: {type(x)}"
     )
 
-lib.py_free_mat.argtypes = [ctypes.c_void_p]
-lib.py_extract_nrow.restype = ctypes.c_int
-lib.py_extract_nrow.argtypes = [ctypes.c_void_p]
-lib.py_extract_ncol.restype = ctypes.c_int
-lib.py_extract_ncol.argtypes = [ctypes.c_void_p]
-lib.py_extract_sparse.restype = ctypes.c_int
-lib.py_extract_sparse.argtypes = [ctypes.c_void_p]
-lib.py_extract_row.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
-lib.py_extract_column.argtypes = [ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p]
+lib.py_free_mat.argtypes = [ct.c_void_p]
+lib.py_extract_nrow.restype = ct.c_int
+lib.py_extract_nrow.argtypes = [ct.c_void_p]
+lib.py_extract_ncol.restype = ct.c_int
+lib.py_extract_ncol.argtypes = [ct.c_void_p]
+lib.py_extract_sparse.restype = ct.c_int
+lib.py_extract_sparse.argtypes = [ct.c_void_p]
+lib.py_extract_row.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
+lib.py_extract_column.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
 
 class TatamiNumericPointer:
     def __init__(self, ptr):
@@ -71,8 +77,8 @@ class TatamiNumericPointer:
         lib.py_extract_column(self.ptr, c, output.ctypes.data)
         return output
 
-lib.py_initialize_dense_matrix.restype = ctypes.c_void_p
-lib.py_initialize_dense_matrix.argtypes = [ctypes.c_int, ctypes.c_int, ctypes.c_char_p, ctypes.c_void_p, ctypes.c_char]
+lib.py_initialize_dense_matrix.restype = ct.c_void_p
+lib.py_initialize_dense_matrix.argtypes = [ct.c_int, ct.c_int, ct.c_char_p, ct.c_void_p, ct.c_char]
 
 @tatamize.register
 def _tatamize_numpy(x: np.ndarray, order: str = "C"): 
