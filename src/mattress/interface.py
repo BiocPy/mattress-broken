@@ -12,8 +12,8 @@ __license__ = "MIT"
 import ctypes as ct
 
 # TODO: surely there's a better way than whatever this is.
+import os
 def load_dll():
-    import os
     dirname = os.path.dirname(os.path.abspath(__file__))
     contents = os.listdir(dirname)
     for x in contents:
@@ -21,6 +21,13 @@ def load_dll():
             return ct.CDLL(os.path.join(dirname, x))
 
 lib = load_dll()
+
+def includes():
+    dirname = os.path.dirname(os.path.abspath(__file__))
+    return [ 
+        os.path.join(dirname, "extern", "tatami", "include"),
+        os.path.join(dirname, "include")
+    ]
 
 @singledispatch
 def tatamize(x: Any, order: str = "C"):

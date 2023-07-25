@@ -23,7 +23,8 @@ if __name__ == "__main__":
                         "src/mattress/lib/common.cpp"
                     ],
                     include_dirs=[
-                        "extern/tatami/include"
+                        "src/mattress/extern/tatami/include",
+                        "src/mattress/include"
                     ],
                     language="c++",
                     extra_compile_args=[

@@ -1,2 +1,3 @@
-recursive-include src/mattress/lib/ *
-recursive-include extern *
+recursive-include src/mattress/extern/tatami/include * 
+recursive-include src/mattress/include * 
+prune src/mattress/lib
