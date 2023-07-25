@@ -25,9 +25,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest tox cython numpy
-          cd extern/rds2cpp
-          cmake .
-          cd ../..
       - name: Test with tox
         run: |
           python setup.py build_ext --inplace
@@ -46,12 +43,6 @@ jobs:
         with:
           submodules: true
 
-      - name: Install dependencies
-        run: |
-          cd extern/rds2cpp
-          cmake .
-          cd ../..
-
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.12.1
         env:
@@ -68,12 +59,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: true
-
-      - name: Install dependencies
-        run: |
-          cd extern/rds2cpp
-          cmake .
-          cd ../..
 
       - name: Build sdist
         run: pipx run build --sdist

@@ -20,7 +20,11 @@ if __name__ == "__main__":
                 [
                     Extension(
                         "mattress.core",
-                        [], # list of source files ["src/rds2py/lib/rds_parser.cpp", "src/rds2py/lib/parser.pyx"],
+                        [ 
+                            "src/mattress/lib/bindings.pyx", 
+                            "src/mattress/lib/cpp/dense.cpp", 
+                            "src/mattress/lib/cpp/common.cpp"
+                        ],
                         include_dirs=[
                             "extern/tatami/include",
                             "extern/tatami_hdf5/include",
