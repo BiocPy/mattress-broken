@@ -42,6 +42,4 @@ def _tatamize_numpy(x: np.ndarray) -> TatamiNumericPointer:
     Returns:
         TatamiNumericPointer: a pointer to tatami object.
     """
-    order_to_bool = map_order_to_bool(order=order)
-    dtype = str(x.dtype).encode("utf-8")
-    return TatamiNumericPointer.from_dense_matrix(x, dtype=dtype, order=order_to_bool)
+    return TatamiNumericPointer.from_dense_matrix(x)

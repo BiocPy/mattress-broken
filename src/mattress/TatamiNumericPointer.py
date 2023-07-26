@@ -29,8 +29,7 @@ lib.py_initialize_dense_matrix.argtypes = [
     ct.c_int,
     ct.c_int,
     ct.c_char_p,
-    ct.c_void_p,
-    ct.c_char,
+    ct.c_void_p
 ]
 
 lib.py_initialize_compressed_sparse_matrix.restype = ct.c_void_p
@@ -127,10 +126,12 @@ class TatamiNumericPointer:
         if len(x.shape) != 2:
             raise ValueError("'x' should be a 2-dimensional array")
 
-        dtype = str(x.dtype).encode("utf-8")
         return cls(
             ptr = lib.py_initialize_dense_matrix(
-                x.shape[0], x.shape[1], dtype, x.ctypes.data, True
+                x.shape[0], 
+                x.shape[1], 
+                str(x.dtype).encode("utf-8"),
+                x.ctypes.data
             ),
             obj = x
         )
