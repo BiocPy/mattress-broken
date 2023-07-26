@@ -13,6 +13,8 @@ import ctypes as ct
 
 # TODO: surely there's a better way than whatever this is.
 import os
+
+
 def load_dll():
     dirname = os.path.dirname(os.path.abspath(__file__))
     contents = os.listdir(dirname)
@@ -20,14 +22,17 @@ def load_dll():
         if x.startswith("core") and not x.endswith("py"):
             return ct.CDLL(os.path.join(dirname, x))
 
+
 lib = load_dll()
+
 
 def includes():
     dirname = os.path.dirname(os.path.abspath(__file__))
-    return [ 
+    return [
         os.path.join(dirname, "extern", "tatami", "include"),
-        os.path.join(dirname, "include")
+        os.path.join(dirname, "include"),
     ]
+
 
 @singledispatch
 def tatamize(x: Any, order: str = "C"):
@@ -48,6 +53,7 @@ def tatamize(x: Any, order: str = "C"):
         f"tatamize is not supported for objects of class: {type(x)}"
     )
 
+
 lib.py_free_mat.argtypes = [ct.c_void_p]
 lib.py_extract_nrow.restype = ct.c_int
 lib.py_extract_nrow.argtypes = [ct.c_void_p]
@@ -57,6 +63,7 @@ lib.py_extract_sparse.restype = ct.c_int
 lib.py_extract_sparse.argtypes = [ct.c_void_p]
 lib.py_extract_row.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
 lib.py_extract_column.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
+
 
 class TatamiNumericPointer:
     def __init__(self, ptr):
@@ -84,11 +91,23 @@ class TatamiNumericPointer:
         lib.py_extract_column(self.ptr, c, output.ctypes.data)
         return output
 
+
 lib.py_initialize_dense_matrix.restype = ct.c_void_p
-lib.py_initialize_dense_matrix.argtypes = [ct.c_int, ct.c_int, ct.c_char_p, ct.c_void_p, ct.c_char]
+lib.py_initialize_dense_matrix.argtypes = [
+    ct.c_int,
+    ct.c_int,
+    ct.c_char_p,
+    ct.c_void_p,
+    ct.c_char,
+]
+
 
 @tatamize.register
-def _tatamize_numpy(x: np.ndarray, order: str = "C"): 
+def _tatamize_numpy(x: np.ndarray, order: str = "C"):
     order_to_bool = map_order_to_bool(order=order)
-    dtype = str(x.dtype).encode('utf-8')
-    return TatamiNumericPointer(lib.py_initialize_dense_matrix(x.shape[0], x.shape[1], dtype, x.ctypes.data, order_to_bool))
+    dtype = str(x.dtype).encode("utf-8")
+    return TatamiNumericPointer(
+        lib.py_initialize_dense_matrix(
+            x.shape[0], x.shape[1], dtype, x.ctypes.data, order_to_bool
+        )
+    )

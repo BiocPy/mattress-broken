@@ -6,10 +6,9 @@
     PyScaffold helps you to put up the scaffold of your new Python project.
     Learn more under: https://pyscaffold.org/
 """
+import numpy
 from setuptools import setup
 from setuptools.extension import Extension
-
-import numpy
 
 if __name__ == "__main__":
     try:
@@ -18,20 +17,17 @@ if __name__ == "__main__":
             ext_modules=[
                 Extension(
                     "mattress.core",
-                    [ 
-                        "src/mattress/lib/dense.cpp", 
-                        "src/mattress/lib/common.cpp"
-                    ],
+                    ["src/mattress/lib/dense.cpp", "src/mattress/lib/common.cpp"],
                     include_dirs=[
                         "src/mattress/extern/tatami/include",
-                        "src/mattress/include"
+                        "src/mattress/include",
                     ],
                     language="c++",
                     extra_compile_args=[
                         "-std=c++17",
-                    ]
+                    ],
                 )
-            ]
+            ],
         )
     except:  # noqa
         print(
