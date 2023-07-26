@@ -9,10 +9,10 @@ __license__ = "MIT"
 
 
 def includes() -> list[str]:
-    """includes provides access libraries for downstream apps.
+    """Provides access to C++ headers (including tatami) for downstream packages.
 
     Returns:
-        list[str]: list of paths to the source files.
+        list[str]: list of paths to the header files.
     """
     dirname = os.path.dirname(os.path.abspath(__file__))
     return [
