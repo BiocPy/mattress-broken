@@ -1,37 +1,13 @@
-import ctypes as ct
 from typing import Sequence
 
 import numpy as np
 
-from .cpphelpers import load_dll
+from .cpphelpers import lib
 from .types import NumberTypes
 
 __author__ = "ltla, jkanche"
 __copyright__ = "ltla, jkanche"
 __license__ = "MIT"
-
-
-lib = load_dll()
-
-lib.py_free_mat.argtypes = [ct.c_void_p]
-lib.py_extract_nrow.restype = ct.c_int
-lib.py_extract_nrow.argtypes = [ct.c_void_p]
-lib.py_extract_ncol.restype = ct.c_int
-lib.py_extract_ncol.argtypes = [ct.c_void_p]
-lib.py_extract_sparse.restype = ct.c_int
-lib.py_extract_sparse.argtypes = [ct.c_void_p]
-lib.py_extract_row.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
-lib.py_extract_column.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
-
-
-lib.py_initialize_dense_matrix.restype = ct.c_void_p
-lib.py_initialize_dense_matrix.argtypes = [
-    ct.c_int,
-    ct.c_int,
-    ct.c_char_p,
-    ct.c_void_p,
-    ct.c_char,
-]
 
 
 class TatamiNumericPointer:
