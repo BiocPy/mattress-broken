@@ -114,22 +114,23 @@ class TatamiNumericPointer:
         return output
 
     @classmethod
-    def from_dense_matrix(
-        cls, x: np.ndarray, dtype: str, order: bool
-    ) -> "TatamiNumericPointer":
-        """Initialize class from a dense matrix.
+    def from_dense_matrix(cls, x: np.ndarray) -> "TatamiNumericPointer":
+    """Initialize class from a dense matrix.
 
         Args:
-            x (np.ndarray): input numpy matrix.
-            dtype (str): dtype of the values.
-            order (bool): True if order is 'C' else False.
+            x (np.ndarray): input numpy array with 2 dimensions.
 
         Returns:
             TatamiNumericPointer: instance of the class.
         """
+
+        if len(x.shape) != 2:
+            raise ValueError("'x' should be a 2-dimensional array")
+
+        dtype = str(x.dtype).encode("utf-8")
         return cls(
             ptr = lib.py_initialize_dense_matrix(
-                x.shape[0], x.shape[1], dtype, x.ctypes.data, order
+                x.shape[0], x.shape[1], dtype, x.ctypes.data, True
             ),
             obj = x
         )
