@@ -6,39 +6,28 @@
     PyScaffold helps you to put up the scaffold of your new Python project.
     Learn more under: https://pyscaffold.org/
 """
+import numpy
 from setuptools import setup
 from setuptools.extension import Extension
-
-from Cython.Build import cythonize
-import numpy
 
 if __name__ == "__main__":
     try:
         setup(
             use_scm_version={"version_scheme": "no-guess-dev"},
-            ext_modules=cythonize(
-                [
-                    Extension(
-                        "mattress.core",
-                        [ 
-                            "src/mattress/lib/bindings.pyx", 
-                            "src/mattress/lib/cpp/dense.cpp", 
-                            "src/mattress/lib/cpp/common.cpp"
-                        ],
-                        include_dirs=[
-                            "extern/tatami/include",
-                            "extern/tatami_hdf5/include",
-                            numpy.get_include(),
-                        ],
-                        language="c++",
-                        extra_compile_args=[
-                            "-std=c++17",
-                        ],
-                        extra_link_args=["-lz"],
-                    )
-                ],
-                compiler_directives={"language_level": "3"},
-            ),
+            ext_modules=[
+                Extension(
+                    "mattress.core",
+                    ["src/mattress/lib/dense.cpp", "src/mattress/lib/common.cpp"],
+                    include_dirs=[
+                        "src/mattress/extern/tatami/include",
+                        "src/mattress/include",
+                    ],
+                    language="c++",
+                    extra_compile_args=[
+                        "-std=c++17",
+                    ],
+                )
+            ],
         )
     except:  # noqa
         print(

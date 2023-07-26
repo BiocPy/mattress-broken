@@ -3,7 +3,7 @@ from typing import Any
 
 import numpy as np
 
-from .core import TatamiNumericPointer
+from .TatamiNumericPointer import TatamiNumericPointer
 from .utils import map_order_to_bool
 
 __author__ = "jkanche"
@@ -21,7 +21,7 @@ def tatamize(x: Any, order: str = "C") -> TatamiNumericPointer:
             row-major (C-style) or column-major (Fortran-style) order.
 
     Raises:
-        NotImplementedError: if x is not supported
+        NotImplementedError: if x is not supported.
 
     Returns:
         TatamiNumericPointer: a pointer to tatami object.
@@ -33,5 +33,19 @@ def tatamize(x: Any, order: str = "C") -> TatamiNumericPointer:
 
 @tatamize.register
 def _tatamize_numpy(x: np.ndarray, order: str = "C") -> TatamiNumericPointer:
+    """Converts numpy representations to tatami.
+
+    Args:
+        x (np.ndarray): A numpy nd-array object.
+        order (str): dense matrix representation, ‘C’, ‘F’,
+            row-major (C-style) or column-major (Fortran-style) order.
+
+    Raises:
+        NotImplementedError: if x is not supported.
+
+    Returns:
+        TatamiNumericPointer: a pointer to tatami object.
+    """
     order_to_bool = map_order_to_bool(order=order)
-    return TatamiNumericPointer.from_dense(x.shape[0], x.shape[1], x, order_to_bool)
+    dtype = str(x.dtype).encode("utf-8")
+    return TatamiNumericPointer.from_dense_matrix(x, dtype=dtype, order=order_to_bool)
