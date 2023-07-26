@@ -73,8 +73,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Build docs
-        run: |
-          tox -e docs
+        run: tox -e docs
       - run: touch ./docs/_build/html/.nojekyll
       - name: GH Pages Deployment
         uses: JamesIves/github-pages-deploy-action@4.1.3
