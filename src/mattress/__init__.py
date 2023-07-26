@@ -17,3 +17,4 @@ finally:
 
 from .cpphelpers import includes
 from .interface import tatamize
+from .TatamiNumericPointer import TatamiNumericPointer

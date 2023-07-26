@@ -1,10 +1,9 @@
-import ctypes as ct
-from typing import Sequence
+from typing import Any, Sequence
 
 import numpy as np
 import scipy.sparse as sp
 
-from .cpphelpers import load_dll
+from .cpphelpers import lib
 from .types import NumberTypes
 
 __author__ = "ltla, jkanche"
@@ -12,44 +11,10 @@ __copyright__ = "ltla, jkanche"
 __license__ = "MIT"
 
 
-lib = load_dll()
-
-lib.py_free_mat.argtypes = [ct.c_void_p]
-lib.py_extract_nrow.restype = ct.c_int
-lib.py_extract_nrow.argtypes = [ct.c_void_p]
-lib.py_extract_ncol.restype = ct.c_int
-lib.py_extract_ncol.argtypes = [ct.c_void_p]
-lib.py_extract_sparse.restype = ct.c_int
-lib.py_extract_sparse.argtypes = [ct.c_void_p]
-lib.py_extract_row.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
-lib.py_extract_column.argtypes = [ct.c_void_p, ct.c_int, ct.c_void_p]
-
-lib.py_initialize_dense_matrix.restype = ct.c_void_p
-lib.py_initialize_dense_matrix.argtypes = [
-    ct.c_int,
-    ct.c_int,
-    ct.c_char_p,
-    ct.c_void_p,
-    ct.c_char,
-]
-
-lib.py_initialize_compressed_sparse_matrix.restype = ct.c_void_p
-lib.py_initialize_compressed_sparse_matrix.argtypes = [
-    ct.c_int,
-    ct.c_int,
-    ct.c_uint64,
-    ct.c_char_p,
-    ct.c_void_p,
-    ct.c_char_p,
-    ct.c_void_p,
-    ct.c_void_p,
-    ct.c_uint8,
-]
-
 class TatamiNumericPointer:
     """Initialize a Tatami Numeric Ponter object."""
 
-    def __init__(self, ptr: "lib.Mattress", obj: "Any"):
+    def __init__(self, ptr: "lib.Mattress", obj: Any):
         """Initialize the class.
 
         Args:
@@ -128,10 +93,10 @@ class TatamiNumericPointer:
             TatamiNumericPointer: instance of the class.
         """
         return cls(
-            ptr = lib.py_initialize_dense_matrix(
+            ptr=lib.py_initialize_dense_matrix(
                 x.shape[0], x.shape[1], dtype, x.ctypes.data, order
             ),
-            obj = x
+            obj=x,
         )
 
     @classmethod
@@ -148,18 +113,18 @@ class TatamiNumericPointer:
         tmp = x.indptr.astype(np.uint64)
 
         return cls(
-            ptr = lib.py_initialize_compressed_sparse_matrix(
-                x.shape[0], 
-                x.shape[1], 
+            ptr=lib.py_initialize_compressed_sparse_matrix(
+                x.shape[0],
+                x.shape[1],
                 len(x.data),
                 str(x.data.dtype).encode("UTF-8"),
                 x.data.ctypes.data,
                 str(x.indices.dtype).encode("UTF-8"),
                 x.indices.ctypes.data,
                 tmp.ctypes.data,
-                False
+                False,
             ),
-            obj = [tmp, x]
+            obj=[tmp, x],
         )
 
     @classmethod
@@ -175,16 +140,16 @@ class TatamiNumericPointer:
 
         tmp = x.indptr.astype(np.uint64)
         return cls(
-            ptr = lib.py_initialize_compressed_sparse_matrix(
-                x.shape[0], 
-                x.shape[1], 
+            ptr=lib.py_initialize_compressed_sparse_matrix(
+                x.shape[0],
+                x.shape[1],
                 len(x.data),
                 str(x.data.dtype).encode("UTF-8"),
                 x.data.ctypes.data,
                 str(x.indices.dtype).encode("UTF-8"),
                 x.indices.ctypes.data,
                 tmp.ctypes.data,
-                True 
+                True,
             ),
-            obj = [tmp, x]
+            obj=[tmp, x],
         )
