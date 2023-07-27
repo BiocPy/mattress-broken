@@ -1,6 +1,7 @@
-from typing import Sequence
+from typing import Any, Sequence
 
 import numpy as np
+import scipy.sparse as sp
 
 from .cpphelpers import lib
 from .types import NumberTypes
@@ -13,13 +14,16 @@ __license__ = "MIT"
 class TatamiNumericPointer:
     """Initialize a Tatami Numeric Ponter object."""
 
-    def __init__(self, ptr: "lib.Mattress"):
+    def __init__(self, ptr: "lib.Mattress", obj: Any):
         """Initialize the class.
 
         Args:
-            ptr (lib.Mattress): pointer to the tatami object.
+            ptr (lib.Mattress): pointer to a tatami instance.
+            obj (Any): arbitrary Python object that is referenced by the tatami instance.
+                       This is stored here to avoid garbage collection.
         """
         self.ptr = ptr
+        self.obj = obj
 
     def __del__(self):
         lib.py_free_mat(self.ptr)
@@ -75,21 +79,78 @@ class TatamiNumericPointer:
         return output
 
     @classmethod
-    def from_dense_matrix(
-        cls, x: np.ndarray, dtype: str, order: bool
-    ) -> "TatamiNumericPointer":
+    def from_dense_matrix(cls, x: np.ndarray, order: bool) -> "TatamiNumericPointer":
         """Initialize class from a dense matrix.
 
         Args:
             x (np.ndarray): input numpy matrix.
-            dtype (str): dtype of the values.
             order (bool): True if order is 'C' else False.
 
         Returns:
             TatamiNumericPointer: instance of the class.
         """
         return cls(
-            lib.py_initialize_dense_matrix(
-                x.shape[0], x.shape[1], dtype, x.ctypes.data, order
-            )
+            ptr=lib.py_initialize_dense_matrix(
+                x.shape[0],
+                x.shape[1],
+                str(x.dtype).encode("utf-8"),
+                x.ctypes.data,
+                order,
+            ),
+            obj=x,
+        )
+
+    @classmethod
+    def from_csc_array(cls, x: sp.csc_array) -> "TatamiNumericPointer":
+        """Initialize class from a compressed sparse column matrix.
+
+        Args:
+            x (scipy.sparse.csc_array): input sparse matrix.
+
+        Returns:
+            TatamiNumericPointer: instance of the class.
+        """
+
+        tmp = x.indptr.astype(np.uint64)
+
+        return cls(
+            ptr=lib.py_initialize_compressed_sparse_matrix(
+                x.shape[0],
+                x.shape[1],
+                len(x.data),
+                str(x.data.dtype).encode("UTF-8"),
+                x.data.ctypes.data,
+                str(x.indices.dtype).encode("UTF-8"),
+                x.indices.ctypes.data,
+                tmp.ctypes.data,
+                False,
+            ),
+            obj=[tmp, x],
+        )
+
+    @classmethod
+    def from_csr_array(cls, x: sp.csr_array) -> "TatamiNumericPointer":
+        """Initialize class from a compressed sparse row matrix.
+
+        Args:
+            x (scipy.sparse.csc_array): input sparse matrix.
+
+        Returns:
+            TatamiNumericPointer: instance of the class.
+        """
+
+        tmp = x.indptr.astype(np.uint64)
+        return cls(
+            ptr=lib.py_initialize_compressed_sparse_matrix(
+                x.shape[0],
+                x.shape[1],
+                len(x.data),
+                str(x.data.dtype).encode("UTF-8"),
+                x.data.ctypes.data,
+                str(x.indices.dtype).encode("UTF-8"),
+                x.indices.ctypes.data,
+                tmp.ctypes.data,
+                True,
+            ),
+            obj=[tmp, x],
         )

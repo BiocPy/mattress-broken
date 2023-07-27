@@ -61,3 +61,16 @@ lib.py_initialize_dense_matrix.argtypes = [
     ct.c_void_p,
     ct.c_char,
 ]
+
+lib.py_initialize_compressed_sparse_matrix.restype = ct.c_void_p
+lib.py_initialize_compressed_sparse_matrix.argtypes = [
+    ct.c_int,
+    ct.c_int,
+    ct.c_uint64,
+    ct.c_char_p,
+    ct.c_void_p,
+    ct.c_char_p,
+    ct.c_void_p,
+    ct.c_void_p,
+    ct.c_uint8,
+]
