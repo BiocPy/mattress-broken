@@ -5,7 +5,6 @@ import numpy as np
 import scipy.sparse as sp
 
 from .TatamiNumericPointer import TatamiNumericPointer
-from .utils import map_order_to_bool
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -13,13 +12,11 @@ __license__ = "MIT"
 
 
 @singledispatch
-def tatamize(x: Any, order: str = "C") -> TatamiNumericPointer:
+def tatamize(x: Any) -> TatamiNumericPointer:
     """Converts python matrix representations to tatami.
 
     Args:
         x (Any): Any matrix-like object.
-        order (str): dense matrix representation, ‘C’, ‘F’,
-            row-major (C-style) or column-major (Fortran-style) order.
 
     Raises:
         NotImplementedError: if x is not supported.
@@ -33,13 +30,11 @@ def tatamize(x: Any, order: str = "C") -> TatamiNumericPointer:
 
 
 @tatamize.register
-def _tatamize_numpy(x: np.ndarray, order: str = "C") -> TatamiNumericPointer:
+def _tatamize_numpy(x: np.ndarray) -> TatamiNumericPointer:
     """Converts numpy representations to tatami.
 
     Args:
         x (np.ndarray): A numpy nd-array object.
-        order (str): dense matrix representation, ‘C’, ‘F’,
-            row-major (C-style) or column-major (Fortran-style) order.
 
     Raises:
         NotImplementedError: if x is not supported.
@@ -47,8 +42,7 @@ def _tatamize_numpy(x: np.ndarray, order: str = "C") -> TatamiNumericPointer:
     Returns:
         TatamiNumericPointer: a pointer to tatami object.
     """
-    order_to_bool = map_order_to_bool(order=order)
-    return TatamiNumericPointer.from_dense_matrix(x, order=order_to_bool)
+    return TatamiNumericPointer.from_dense_matrix(x)
 
 
 @tatamize.register
