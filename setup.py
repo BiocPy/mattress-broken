@@ -18,9 +18,9 @@ if __name__ == "__main__":
                 Extension(
                     "mattress.core",
                     [
-                        "src/mattress/lib/dense.cpp", 
-                        "src/mattress/lib/compressed_sparse.cpp", 
-                        "src/mattress/lib/common.cpp"
+                        "src/mattress/lib/dense.cpp",
+                        "src/mattress/lib/compressed_sparse.cpp",
+                        "src/mattress/lib/common.cpp",
                     ],
                     include_dirs=[
                         "src/mattress/extern/tatami/include",
